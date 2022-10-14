@@ -1,0 +1,30 @@
+Transform: AWS::Serverless-2016-10-31
+Resources:
+  OrdersTable:
+    Type: AWS::Serverless::SimpleTable
+  CreateOrderFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: create-order
+      Handler: app.lambdaHandler
+      Runtime: nodejs16.x
+      Architectures:
+        - x86_64
+      Events:
+        CreateOrder:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /create-order
+            Method: post
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref OrdersTable
+  MyConnector:
+    Type: AWS::Serverless::Connector
+    Properties:
+      Source:
+        Id: CreateOrderFunction
+      Destination:
+        Id: OrdersTable
+      Permissions:
+        - Write

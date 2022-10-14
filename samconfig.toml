@@ -1,0 +1,11 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "the-complete-sam-workshop-connectors"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-1m0305c74a7wb"
+s3_prefix = "the-complete-sam-workshop-connectors"
+region = "us-west-2"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+image_repositories = []
