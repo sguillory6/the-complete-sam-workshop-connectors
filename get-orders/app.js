@@ -8,33 +8,23 @@ let response;
  * Event doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format
  * @param {Object} event - API Gateway Lambda Proxy Input Format
  *
- * Context doc: https://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-context.html 
+ * Context doc: https://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-context.html
  * @param {Object} context
  *
  * Return doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html
  * @returns {Object} object - API Gateway Lambda Proxy Output Format
- * 
+ *
  */
-
 exports.lambdaHandler = async (event, context) => {
     try {
-        const order = JSON.parse(event.body)
-
-        await docClient.put({
+        let items = await docClient.scan({
             // TableName: process.env.TABLE_NAME,
             TableName: "the-complete-sam-workshop-connectors-OrdersTable-XOVU3O8ZRMK8",
-            Item: {
-                PK: parseInt(order.id),
-                sku: order.sku,
-                product: order.product,
-                quantity: order.quantity
-            }
         }).promise();
+        const result = JSON.stringify(items)
         response = {
             'statusCode': 200,
-            'body': JSON.stringify({
-                message: 'order saved'
-            })
+            'body': result
         }
     } catch (err) {
         console.log(err);

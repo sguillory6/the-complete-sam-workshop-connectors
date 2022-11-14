@@ -8,6 +8,7 @@ Resources:
       CodeUri: create-order
       Handler: app.lambdaHandler
       Runtime: nodejs16.x
+      Timeout: 10
       Architectures:
         - x86_64
       Events:
@@ -19,7 +20,25 @@ Resources:
       Environment:
         Variables:
           TABLE_NAME: !Ref OrdersTable
-  MyConnector:
+  GetOrdersFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: get-orders
+      Handler: app.lambdaHandler
+      Runtime: nodejs16.x
+      Timeout: 10
+      Architectures:
+        - x86_64
+      Events:
+        GetOrders:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /get-orders
+            Method: get
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref OrdersTable
+  CreateOrderConnector:
     Type: AWS::Serverless::Connector
     Properties:
       Source:
@@ -28,3 +47,12 @@ Resources:
         Id: OrdersTable
       Permissions:
         - Write
+  GetOrdersConnector:
+    Type: AWS::Serverless::Connector
+    Properties:
+      Source:
+        Id: GetOrdersFunction
+      Destination:
+        Id: OrdersTable
+      Permissions:
+        - Read
