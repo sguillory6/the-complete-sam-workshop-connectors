@@ -1,6 +1,6 @@
 const AWS = require("aws-sdk");
 
-const docClient = new AWS.DynamoDB.DocumentClient();
+const docClient = new AWS.DynamoDB.DocumentClient({endpointURL: 'http://localhost:8000'});
 let response;
 
 /**
@@ -21,8 +21,7 @@ exports.lambdaHandler = async (event, context) => {
         const order = JSON.parse(event.body)
 
         await docClient.put({
-            // TableName: process.env.TABLE_NAME,
-            TableName: "the-complete-sam-workshop-connectors-OrdersTable-XOVU3O8ZRMK8",
+            TableName: process.env.TABLE_NAME,
             Item: {
                 PK: parseInt(order.id),
                 sku: order.sku,

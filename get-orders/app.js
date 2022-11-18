@@ -1,6 +1,6 @@
 const AWS = require("aws-sdk");
 
-const docClient = new AWS.DynamoDB.DocumentClient();
+const docClient = new AWS.DynamoDB.DocumentClient({endpointURL: 'http://localhost:8000'});
 let response;
 
 /**
@@ -18,8 +18,7 @@ let response;
 exports.lambdaHandler = async (event, context) => {
     try {
         let items = await docClient.scan({
-            // TableName: process.env.TABLE_NAME,
-            TableName: "the-complete-sam-workshop-connectors-OrdersTable-XOVU3O8ZRMK8",
+            TableName: process.env.TABLE_NAME,
         }).promise();
         const result = JSON.stringify(items)
         response = {
