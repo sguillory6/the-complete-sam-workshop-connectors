@@ -1,7 +1,15 @@
-const AWS = require("aws-sdk");
+const {DynamoDBClient } = require ( "@aws-sdk/client-dynamodb" );
+const {DynamoDBDocumentClient, ScanCommand} = require ( "@aws-sdk/lib-dynamodb" );
 
-const docClient = new AWS.DynamoDB.DocumentClient({endpointURL: 'http://localhost:8000'});
+const client = new DynamoDBClient({ region: "us-west-2", endpoint: "http://local-dynamodb:8000" });
+const ddbDocClient = DynamoDBDocumentClient.from(client);
 let response;
+
+// Set the parameters.
+const params = {
+    ProjectionExpression: "Id, sku, product, quantity",
+    TableName: process.env.TABLE_NAME,
+};
 
 /**
  *
@@ -17,9 +25,7 @@ let response;
  */
 exports.lambdaHandler = async (event, context) => {
     try {
-        let items = await docClient.scan({
-            TableName: process.env.TABLE_NAME,
-        }).promise();
+        const items = await ddbDocClient.send(new ScanCommand(params));
         const result = JSON.stringify(items)
         response = {
             'statusCode': 200,
@@ -29,6 +35,5 @@ exports.lambdaHandler = async (event, context) => {
         console.log(err);
         return err;
     }
-
     return response
 };

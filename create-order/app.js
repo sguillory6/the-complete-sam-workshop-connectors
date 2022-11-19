@@ -1,6 +1,8 @@
-const AWS = require("aws-sdk");
+const {DynamoDBClient } = require ( "@aws-sdk/client-dynamodb" );
+const {DynamoDBDocumentClient, PutCommand} = require ( "@aws-sdk/lib-dynamodb" );
 
-const docClient = new AWS.DynamoDB.DocumentClient({endpointURL: 'http://localhost:8000'});
+const client = new DynamoDBClient({ region: "us-west-2", endpoint: "http://local-dynamodb:8000" });
+const ddbDocClient = DynamoDBDocumentClient.from(client);
 let response;
 
 /**
@@ -20,15 +22,19 @@ exports.lambdaHandler = async (event, context) => {
     try {
         const order = JSON.parse(event.body)
 
-        await docClient.put({
+        // Set the parameters.
+        const params = {
             TableName: process.env.TABLE_NAME,
             Item: {
-                PK: parseInt(order.id),
+                Id: parseInt(order.id),
                 sku: order.sku,
                 product: order.product,
                 quantity: order.quantity
-            }
-        }).promise();
+            },
+        };
+
+        console.log("Table Name: " + process.env.TABLE_NAME);
+        await ddbDocClient.send(new PutCommand(params));
         response = {
             'statusCode': 200,
             'body': JSON.stringify({

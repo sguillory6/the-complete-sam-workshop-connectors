@@ -7,7 +7,9 @@
   "author": "SAM CLI",
   "license": "MIT",
   "dependencies": {
-    "axios": ">=0.21.1"
+    "axios": ">=0.21.1",
+    "@aws-sdk/client-dynamodb": "^3.208.0",
+    "@aws-sdk/lib-dynamodb": "^3.208.0"
   },
   "scripts": {
     "test": "mocha tests/unit/"

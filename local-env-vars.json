@@ -1,5 +1,6 @@
 {
   "Parameters": {
-    "TABLE_NAME": "the-complete-sam-workshop-connectors-OrdersTable-XOVU3O8ZRMK8"
+    "TABLE_NAME": "OrderTable",
+    "ENDPOINT_URL": "http://localhost:8000"
   }
 }
